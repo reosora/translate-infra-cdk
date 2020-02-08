@@ -1,0 +1,138 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Metadata": {
+        "AWS::CloudFormation::Designer": {
+            "3e71867e-49a4-4088-b6e4-505d7508b22b": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 510,
+                    "y": 40
+                },
+                "z": 0,
+                "embeds": [],
+                "dependson": [
+                    "0c89f6fc-ef1b-4fa1-b87c-99a360625f15"
+                ]
+            },
+            "0c89f6fc-ef1b-4fa1-b87c-99a360625f15": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 330,
+                    "y": 40
+                },
+                "z": 0,
+                "embeds": [],
+                "dependson": [
+                    "4c47fdef-9555-4d43-8303-bac6afd5d921"
+                ]
+            },
+            "4c47fdef-9555-4d43-8303-bac6afd5d921": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 140,
+                    "y": 40
+                },
+                "z": 0,
+                "embeds": []
+            }
+        }
+    },
+    "Resources": {
+        "WAFRIPS1ABUU": {
+            "Type": "AWS::WAFRegional::IPSet",
+            "Properties": {
+                "IPSetDescriptors": [
+                    {
+                        "Type": "IPV4",
+                        "Value": {
+                            "Ref" : "IPRange"
+                        }
+                    }
+                ],
+                "Name": "OriginalIpSet"
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "3e71867e-49a4-4088-b6e4-505d7508b22b"
+                }
+            }
+        },
+        "WAFRR4NJAC": {
+            "Type": "AWS::WAFRegional::Rule",
+            "Properties": {
+                "MetricName": "OriginalRule",
+                "Name": "OriginalRuleForTranslateCDK",
+                "Predicates": [
+                    {
+                        "DataId": {
+                            "Ref": "WAFRIPS1ABUU"
+                        },
+                        "Negated": false,
+                        "Type": "IPMatch"
+                    }
+                ]
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "0c89f6fc-ef1b-4fa1-b87c-99a360625f15"
+                }
+            }
+        },
+        "WAFRWAC40DUT": {
+            "Type": "AWS::WAFRegional::WebACL",
+            "Properties": {
+                "DefaultAction": {
+                    "Type": "BLOCK"
+                },
+                "MetricName": "ACLfromTranslateCDK",
+                "Name": "WebACLfromTranslateCDK",
+                "Rules": [
+                    {
+                        "Action": {
+                            "Type": "ALLOW"
+                        },
+                        "Priority": 1,
+                        "RuleId": {
+                            "Ref": "WAFRR4NJAC"
+                        }
+                    }
+                ]
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "4c47fdef-9555-4d43-8303-bac6afd5d921"
+                }
+            }
+        },
+        "WebAssociation": {
+            "Type" : "AWS::WAFRegional::WebACLAssociation",
+            "Properties" : {
+                "ResourceArn" : {
+                    "Ref" : "ApiGatewayArnParameter"
+                },
+                "WebACLId" : {
+                    "Ref" : "WAFRWAC40DUT"
+                }
+            }
+        }
+    },
+    "Parameters" : {
+        "ApiGatewayArnParameter" : {
+            "Type" : "String",
+            "Description" : "Enter api-gateway resource arn to associateWebACL"
+        },
+        "IPRange" : {
+            "Type" : "String",
+            "Description" : "Enter IP Range you want to allow access"
+        }
+    }
+}
