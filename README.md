@@ -1,11 +1,27 @@
 # translate-infra-cdk
-infrastructure code for translate plugin by AWS CDK
+This is infrastructure code for [translate plugin](https://github.com/reosora/simple-a-translate) by AWS CDK and CloudFormation template.
 
-# Welcome to your CDK TypeScript project!
+# How to Use
+Run `createAllResource.sh` to create resources. \
+Note: You have to enter 'y' once to create infra by AWS CDK.
 
-This is a blank project for TypeScript development with CDK.
+```
+$./createAllResource.sh XXX.XXX.XX.XXX/XX
+# XXX.XXX.XX.XXX/XX is IP address range you want to allow access api endopoint.
+```
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+If you want to delete resources, run `deleteAllResource.sh`.
+
+```
+$./deleteAllResource.sh
+```
+
+# CDK TypeScript project
+
+This is a project for TypeScript development with CDK. \
+Note: Some resources made by CloudFormation, not using CDK.
+
+The `cdk.json` file tells the CDK Toolkit how to execute app.
 
 ## Useful commands
 
